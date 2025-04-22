@@ -7,7 +7,7 @@ export default function Header() {
         <div className="flex items-center justify-between py-5 bg-white  w-screen bg-amber-300 px-10">
             <div className='flex'>
             <Link  to="/">
-            <h1 className="text-4xl font-mono font-bold text-gray-800 ">Escrow Connect</h1>
+            <h1 className="text-4xl font-mono font-bold text-gray-800 ">EscrowFi</h1>
             </Link>
             <Link to="/createEscrow" className="hover:underline">
             <h3 className="p-2.5 ml-6 font-mono text-gray-700 font-bold">Create Escrow</h3>

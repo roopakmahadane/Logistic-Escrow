@@ -50,7 +50,7 @@ export default function ConnectWallet(){
     }
     return(
         
-        <button class="bg-teal-700 text-amber-200 p-3 rounded-lg cursor-pointer hover:cursor-pointer hover:bg-teal-800 transition" onClick={connectWallet}>
+        <button class="bg-teal-700 text-amber-300 p-3 rounded-lg cursor-pointer hover:cursor-pointer hover:bg-teal-800 transition" onClick={connectWallet}>
             {walletAddress? `${walletAddress.slice(0,6)}...${walletAddress.slice(-6)}` : `Connect`}
             </button>
     )
