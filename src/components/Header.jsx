@@ -1,4 +1,4 @@
-import '../App.css'
+
 import ConnectWallet from './ConnectWalletButton'
 import { Link } from 'react-router-dom';
 
