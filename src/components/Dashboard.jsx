@@ -47,7 +47,7 @@ export default function Dashboard(){
                     byUser.push(resultArray);
                 }
                 
-                console.log("Fetched escrows:", byUser);
+                //console.log("Fetched escrows:", byUser);
                 setCreatedByUser(byUser);
 
                 const arbiterEvents = await contract.queryFilter(contract.filters.NewEscrow(null, null, userAddress), deploymentBlock, 'latest');
@@ -58,7 +58,7 @@ export default function Dashboard(){
                     resultArray.push(arbiterEvents[i].args.id);
                     asArbiter.push(resultArray);
                 }
-                console.log(" as arbiter", asArbiter)
+                //console.log(" as arbiter", asArbiter)
                 setUserIsArbiter(asArbiter);
 
                 const driverEvents = newEscrowEvents.filter(event => event.args.driver === userAddress);
@@ -69,7 +69,7 @@ export default function Dashboard(){
                     resultArray.push(driverEvents[i].args.id);
                     asDriver.push(resultArray);
                 }
-                console.log("asDriver",asDriver)
+                //console.log("asDriver",asDriver)
                 setUserIsDriver(asDriver);
                 
             } catch (error) {
@@ -91,7 +91,7 @@ export default function Dashboard(){
     const getStatusText = (x) => {
         if (!x[4]) return "Yet to be picked";
         if (x[4] && !x[5]) return "On the way";
-        if (x[4] && x[5] && !x[6]) return "Delivered";
+        if (x[4] && x[5] && !x[6]) return "Delivered (Funds Yet to be released)";
         if (x[4] && x[5] && x[6]) return "Order completed";
     }
     const getButtonText = (x) => {
@@ -110,6 +110,7 @@ export default function Dashboard(){
             
             const provider = new ethers.BrowserProvider(window.ethereum);
                 const signer = await provider.getSigner();
+                const signerAddress = await signer.getAddress();
                 const contract = await new ethers.Contract(
                     "0xFa1994bc4161F0Ff135691EE40Cda9f942A0f570",
                     Escrow.abi,
@@ -132,9 +133,22 @@ export default function Dashboard(){
         const updatedEscrow = await contract.escrows(id);
         const updatedArray = [...updatedEscrow];
         updatedArray.push(id);
-        setUserIsDriver(prev =>
-            prev.map(item => item[7] === id ? updatedArray : item)
-        );
+
+        console.log("updatedArray", updatedArray);
+        console.log("Signer address",signerAddress)
+
+        if(signerAddress == escrow.driver){
+            setUserIsDriver(prev =>
+                prev.map(item => item[7] === id ? updatedArray : item)
+            );
+        }
+        if(signerAddress == escrow.arbiter){
+            setUserIsArbiter(prev =>
+                prev.map(item => item[7] === id ? updatedArray : item)
+            );
+        }
+
+       
         setIsDisabled(prev => {
             const newSet = new Set(prev);
             newSet.delete(id);
@@ -186,7 +200,7 @@ export default function Dashboard(){
                 </div>
 
                 <div className="md:w-1/3 w-screen">
-                    <h1 className="mt-20 text-2xl text-center font-mono font-light">As Drivers</h1>
+                    <h1 className="mt-20 text-2xl text-center font-mono font-light">As Driver</h1>
                     {userIsDriver.length > 0 ? (
                         userIsDriver.map((x) => (
 
@@ -208,7 +222,7 @@ export default function Dashboard(){
                 </div>
 
                 <div className="md:w-1/3 w-screen">
-                    <h1 className="mt-20 text-2xl text-center font-mono font-light">As arbiters</h1>
+                    <h1 className="mt-20 text-2xl text-center font-mono font-light">As arbiter</h1>
                     {userIsArbiter.length > 0 ? (
                         userIsArbiter.map((x) => (
                             <div className="bg-white rounded-2xl shadow-lg p-6 transform transition m-10 px-10 duration-500 ">
